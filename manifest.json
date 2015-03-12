@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "ZMD",
+  "version": "0.1",
+
+  "description": "A Chrome extension",
+  "author": "Zhe Wu",
+
+  "background" : {
+    "scripts": ["zmd_background.js"],
+    "persistent": false
+  },
+  "permissions": ["tabs"],
+
+  "omnibox": {
+    "keyword" : "z"
+  },
+
+  "icons": {
+    "16": "z_icon_16.png",
+    "48": "z_icon_48.png",
+    "128": "z_icon_128.png"
+  }
+}
