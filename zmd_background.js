@@ -42,6 +42,15 @@ function TabExists(currentWindow, text) {
     return {exist: false, id: -1};
 }
 
+function OpenNewPage(currentTab, url) {
+    if (currentTab.pinned) {
+        chrome.tabs.create({"url":url});
+    }
+    else {
+        chrome.tabs.update(null, {"url":url});
+    }
+}
+
 function zmdMain(text) {
     console.log('inputEntered: ' + text);
     chrome.windows.getCurrent({populate: true}, function(currentWindow) {
@@ -51,26 +60,36 @@ function zmdMain(text) {
         }
         else { 
             // Tab does not exist.
-            if (text == 'm') {
-                chrome.tabs.update(null, {url:"https://mail.google.com"});
-            } else if (text == 'c') {
-                chrome.tabs.update(null, {url:"https://calendar.google.com"});
-            } else if (text == 'w') {
-                chrome.tabs.update(null, {url:"http://www.weibo.com"});
-            } else if (text == 'i') {
-                chrome.tabs.update(null, {url:"https://inbox.google.com"});
-            } else if (text == 'dr') {
-                chrome.tabs.update(null, {url:"https://drive.google.com"});
-            } else if (text == 'y') {
-                chrome.tabs.update(null, {url:"https://www.youtube.com"});
-            } else if (text == 'map') {
-                chrome.tabs.update(null, {url:"https://maps.google.com"});
-            } else if (text == 'key') {
-                chrome.tabs.update(null, {url:"https://keepersecurity.com/vault/"});
-            } else {
-                // General rule, just use the typed url
-                chrome.tabs.update(null, {url:"http://"+text});
-            }
+            chrome.tabs.query({active:true}, function(tabs) {
+                if (text == 'm') {
+                    url = "https://mail.google.com";
+                } else if (text == 'c') {
+                    url = "https://calendar.google.com";
+                } else if (text == 'w') {
+                    url = "http://www.weibo.com";
+                } else if (text == 'i') {
+                    url = "https://inbox.google.com";
+                } else if (text == 'dr') {
+                    url = "https://drive.google.com";
+                } else if (text == 'y') {
+                    url = "https://www.youtube.com";
+                } else if (text == 'map') {
+                    url = "https://maps.google.com";
+                } else if (text == 'key') {
+                    url = "https://keepersecurity.com/vault/";
+                } else {
+                    // General rule, just use the typed url
+                    url = "http://"+text;
+                }
+                if (tabs.length == 1) {
+                    // Get current tab. There should always be 1 tab active.
+                    OpenNewPage(tabs[0], url);
+                } else {
+                    // Don't know what to do. Creating new tab for now.
+                    chrome.tabs.create({"url":url});
+                }
+            });
+            
         }
     });
 }
