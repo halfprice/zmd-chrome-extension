@@ -3,12 +3,15 @@
 // License: MIT license
 
 function MatchingKeyAndUrl(text, tab) {
-    if ((text == 'm' && tab.url.search("mail.google.com") > -1) ||
+    if ((tab.url.search(text) > -1) ||  //general rules
+        (tab.title.search(text) > -1) ||  //general rules
+        (text == 'm' && tab.url.search("mail.google.com") > -1) ||
         (text == 'c' && tab.title.search("Google Calendar") > -1) ||
         (text == 'i' && tab.url.search("inbox.google.com") > -1) ||
         (text == 'dr' && tab.url.search("drive.google.com") > -1) ||
         (text == 'y' && tab.url.search("youtube.com") > -1) ||
-        (text == 'map' && tab.title.search("Google Map") > -1)){
+        (text == 'map' && tab.title.search("Google Map") > -1))
+    {
         return true;
     }
     return false;
@@ -44,18 +47,13 @@ function zmdMain(text) {
                 chrome.tabs.update(null, {url:"https://drive.google.com"});
             } else if (text == 'y') {
                 chrome.tabs.update(null, {url:"https://www.youtube.com"});
-            } else if (text == 'youku') {
-                chrome.tabs.update(null, {url:"http://www.youku.com"});
             } else if (text == 'map') {
                 chrome.tabs.update(null, {url:"https://maps.google.com"});
-            } else if (text == 'magic') {
-                chrome.tabs.update(null, {url:"http://mbus.doublemap.com/map/"});
-            } else if (text == 'wol') {
-                chrome.tabs.update(null, {url:"http://wolverineaccess.umich.edu"});
             } else if (text == 'key') {
                 chrome.tabs.update(null, {url:"https://keepersecurity.com/vault/"});
-            } else if ( text == 'ex') {
-                chrome.tabs.update(null, {url:"chrome://extensions/"});
+            } else {
+                // General rule, just use the typed url
+                chrome.tabs.update(null, {url:"http://"+text});
             }
         }
     });
