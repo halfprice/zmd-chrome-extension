@@ -2,17 +2,33 @@
 // Email: towuzhe@gmail.com
 // License: MIT license
 
+var KeyWord = [
+'m',
+'c',
+'i',
+'w',
+'dr',
+'y',
+'map',
+'key'
+]
+
 function MatchingKeyAndUrl(text, tab) {
-    if ((tab.url.search(text) > -1) ||  //general rules
-        (tab.title.search(text) > -1) ||  //general rules
-        (text == 'm' && tab.url.search("mail.google.com") > -1) ||
+    if ((text == 'm' && tab.url.search("mail.google.com") > -1) ||
         (text == 'c' && tab.title.search("Google Calendar") > -1) ||
+        (text == 'w' && tab.url.search("weibo.com") > -1) ||
         (text == 'i' && tab.url.search("inbox.google.com") > -1) ||
         (text == 'dr' && tab.url.search("drive.google.com") > -1) ||
         (text == 'y' && tab.url.search("youtube.com") > -1) ||
         (text == 'map' && tab.title.search("Google Map") > -1))
     {
         return true;
+    }
+    if (KeyWord.indexOf(text) == -1) {
+        // Not keyword
+        if ((tab.url.search(text) > -1) || (tab.title.search(text) > -1)) {
+            return true;
+        }
     }
     return false;
 }
@@ -41,8 +57,8 @@ function zmdMain(text) {
                 chrome.tabs.update(null, {url:"https://calendar.google.com"});
             } else if (text == 'w') {
                 chrome.tabs.update(null, {url:"http://www.weibo.com"});
-            } else if (text == 'f') {
-                chrome.tabs.update(null, {url:"https://www.facebook.com"});
+            } else if (text == 'i') {
+                chrome.tabs.update(null, {url:"https://inbox.google.com"});
             } else if (text == 'dr') {
                 chrome.tabs.update(null, {url:"https://drive.google.com"});
             } else if (text == 'y') {
