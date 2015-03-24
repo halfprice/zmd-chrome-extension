@@ -2,63 +2,63 @@
 // Email: towuzhe@gmail.com
 // License: MIT license
 
-chrome.omnibox.onInputEntered.addListener(
-  function(text) {
+function MatchingKeyAndUrl(text, tab) {
+    if ((text == 'm' && tab.url.search("mail.google.com") > -1) ||
+        (text == 'c' && tab.title.search("Google Calendar") > -1) ||
+        (text == 'i' && tab.url.search("inbox.google.com") > -1) ||
+        (text == 'dr' && tab.url.search("drive.google.com") > -1) ||
+        (text == 'y' && tab.url.search("youtube.com") > -1) ||
+        (text == 'map' && tab.title.search("Google Map") > -1)){
+        return true;
+    }
+    return false;
+}
+
+function TabExists(currentWindow, text) {
+    for (var i = 0; i < currentWindow.tabs.length; i++) {
+        if (MatchingKeyAndUrl(text, currentWindow.tabs[i])) {
+            return {exist: true, id: currentWindow.tabs[i].id};
+        }
+    }
+    return {exist: false, id: -1};
+}
+
+function zmdMain(text) {
     console.log('inputEntered: ' + text);
-    if (text == 'm') {
-        chrome.tabs.update(null, {url:"https://mail.google.com"});
-        return;
-    }
-    if (text == 'c') {
-        chrome.tabs.update(null, {url:"https://calendar.google.com"});
-        return;
-    }
-    if (text == 'w') {
-        chrome.tabs.update(null, {url:"http://www.weibo.com"});
-        return;
-    }
-    if (text == 'douban') {
-        chrome.tabs.update(null, {url:"https://www.douban.com"});
-        return;
-    }
-    if (text == 'xiaonei') {
-        chrome.tabs.update(null, {url:"http://www.renren.com"});
-        return;
-    }
-    if (text == 'f') {
-        chrome.tabs.update(null, {url:"https://www.facebook.com"});
-        return;
-    }
-    if (text == 'dr') {
-        chrome.tabs.update(null, {url:"https://drive.google.com"});
-        return;
-    }
-    if (text == 'y') {
-        chrome.tabs.update(null, {url:"https://www.youtube.com"});
-        return;
-    }
-    if (text == 'youku') {
-        chrome.tabs.update(null, {url:"http://www.youku.com"});
-        return;
-    }
-    if (text == 'map') {
-        chrome.tabs.update(null, {url:"https://maps.google.com"});
-        return;
-    }
-    if (text == 'magic') {
-        chrome.tabs.update(null, {url:"http://mbus.doublemap.com/map/"});
-        return;
-    }
-    if (text == 'wol') {
-        chrome.tabs.update(null, {url:"http://wolverineaccess.umich.edu"});
-        return;
-    }
-    if (text == 'key') {
-        chrome.tabs.update(null, {url:"https://keepersecurity.com/vault/"});
-        return;
-    }
-    if (text == 'ex') {
-        chrome.tabs.update(null, {url:"chrome://extensions/"});
-        return;
-    }
-  });
+    chrome.windows.getCurrent({populate: true}, function(currentWindow) {
+        var x = new TabExists(currentWindow, text);
+        if (x.exist) {
+            chrome.tabs.update(x.id, {active:true});
+        }
+        else { 
+            // Tab does not exist.
+            if (text == 'm') {
+                chrome.tabs.update(null, {url:"https://mail.google.com"});
+            } else if (text == 'c') {
+                chrome.tabs.update(null, {url:"https://calendar.google.com"});
+            } else if (text == 'w') {
+                chrome.tabs.update(null, {url:"http://www.weibo.com"});
+            } else if (text == 'f') {
+                chrome.tabs.update(null, {url:"https://www.facebook.com"});
+            } else if (text == 'dr') {
+                chrome.tabs.update(null, {url:"https://drive.google.com"});
+            } else if (text == 'y') {
+                chrome.tabs.update(null, {url:"https://www.youtube.com"});
+            } else if (text == 'youku') {
+                chrome.tabs.update(null, {url:"http://www.youku.com"});
+            } else if (text == 'map') {
+                chrome.tabs.update(null, {url:"https://maps.google.com"});
+            } else if (text == 'magic') {
+                chrome.tabs.update(null, {url:"http://mbus.doublemap.com/map/"});
+            } else if (text == 'wol') {
+                chrome.tabs.update(null, {url:"http://wolverineaccess.umich.edu"});
+            } else if (text == 'key') {
+                chrome.tabs.update(null, {url:"https://keepersecurity.com/vault/"});
+            } else if ( text == 'ex') {
+                chrome.tabs.update(null, {url:"chrome://extensions/"});
+            }
+        }
+    });
+}
+
+chrome.omnibox.onInputEntered.addListener(zmdMain);
