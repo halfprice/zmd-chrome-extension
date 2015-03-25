@@ -2,38 +2,28 @@
 // Email: towuzhe@gmail.com
 // License: MIT license
 
-var KeyWordOriginal = [
-'m',
-'c',
-'i',
-'w',
-'dr',
-'y',
-'map',
-'key'
-];
-
 var KeyUrl = [];
-var KeyWord = KeyWordOriginal;
+//var KeyWord = KeyWordOriginal;
+var KeyWord = [];
 
 function MatchingKeyAndUrl(text, tab) {
     for (var i=0; i< KeyUrl.length; i++) {
-        if (text == KeyUrl[i].key && tab.url.search(KeyUrl[i].url) > -1) {
+        // If url match
+        if (KeyUrl[i].url.length > 0 && text == KeyUrl[i].key && tab.url.search(KeyUrl[i].url) > -1) {
             return true;
         }
     }
-    if ((text == 'm' && tab.url.search("mail.google.com") > -1) ||
-        (text == 'c' && tab.title.search("Google Calendar") > -1) ||
-        (text == 'w' && tab.url.search("weibo.com") > -1) ||
-        (text == 'i' && tab.url.search("inbox.google.com") > -1) ||
-        (text == 'dr' && tab.url.search("drive.google.com") > -1) ||
-        (text == 'y' && tab.url.search("youtube.com") > -1) ||
-        (text == 'map' && tab.title.search("Google Map") > -1))
-    {
-        return true;
+    for (var i=0; i< KeyUrl.length; i++) {
+        // If title match long key
+        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.title.search(KeyUrl[i].long_key) > -1) {
+            return true;
+        }
+        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.url.search(KeyUrl[i].long_key) > -1) {
+            return true;
+        }
     }
     if (KeyWord.indexOf(text) == -1) {
-        // Not keyword
+        // Not keyword, only search for title
         if ((tab.url.search(text) > -1) || (tab.title.search(text) > -1)) {
             return true;
         }
@@ -63,11 +53,11 @@ function zmdMain(text) {
     console.log('inputEntered: ' + text);
     var entries = localStorage.entries;
     KeyUrl = []; //clear map
-    KeyWord = KeyWordOriginal;
+    KeyWord = [];
     console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
-            KeyUrl.push({key:entry.key, url:entry.url});
+            KeyUrl.push({key:entry.key, long_key:entry.long_key, url:entry.url});
             KeyWord.push(entry.key);
         });
     } catch (e) {
@@ -93,26 +83,8 @@ function zmdMain(text) {
                     }
                 }
                 if (!found_url) {
-                    if (text == 'm') {
-                        url = "https://mail.google.com";
-                    } else if (text == 'c') {
-                        url = "https://calendar.google.com";
-                    } else if (text == 'w') {
-                        url = "http://www.weibo.com";
-                    } else if (text == 'i') {
-                        url = "https://inbox.google.com";
-                    } else if (text == 'dr') {
-                        url = "https://drive.google.com";
-                    } else if (text == 'y') {
-                        url = "https://www.youtube.com";
-                    } else if (text == 'map') {
-                        url = "https://maps.google.com";
-                    } else if (text == 'key') {
-                        url = "https://keepersecurity.com/vault/";
-                    } else {
-                        // General rule, just use the typed url
-                        url = text;
-                    }
+                    // General rule, just use the typed url
+                    url = text;
                 }
                 if (tabs.length == 1) {
                     // Get current tab. There should always be 1 tab active.
