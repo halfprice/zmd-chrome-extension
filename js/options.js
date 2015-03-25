@@ -15,7 +15,6 @@ function Entry(data) {
 
   this.getElement('key').onkeyup = storeEntries;
   this.getElement('url').onkeyup = storeEntries;
-  this.getElement('url').onpaste = storeEntries;
 
   var entry = this;
 

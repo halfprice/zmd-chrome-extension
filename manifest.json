@@ -7,18 +7,28 @@
   "author": "Zhe Wu",
 
   "background" : {
-    "scripts": ["zmd_background.js"],
+    "scripts": ["js/zmd_background.js"],
     "persistent": false
   },
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "storage"],
 
   "omnibox": {
     "keyword" : "z"
   },
 
   "icons": {
-    "16": "z_16.png",
-    "48": "z_48.png",
-    "128": "z_128.png"
+    "16": "img/z_16.png",
+    "48": "img/z_48.png",
+    "128": "img/z_128.png"
+  },
+
+  "web_accessible_resources": [
+    "img/*.png"
+  ],
+  "options_ui": {
+    // Required.
+    "page": "options.html",
+    // Recommended.
+    "chrome_style": true
   }
 }
