@@ -25,7 +25,6 @@ function Entry(data) {
     storeEntries();
   };
   storeEntries();
-
 }
 
 Entry.next_id = 0;

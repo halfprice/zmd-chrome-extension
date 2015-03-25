@@ -9,22 +9,22 @@ var KeyWord = [];
 function MatchingKeyAndUrl(text, tab) {
     for (var i=0; i< KeyUrl.length; i++) {
         // If url match
-        if (KeyUrl[i].url.length > 0 && text == KeyUrl[i].key && tab.url.search(KeyUrl[i].url) > -1) {
+        if (KeyUrl[i].url.length > 0 && text == KeyUrl[i].key && tab.url.toLowerCase().search(KeyUrl[i].url) > -1) {
             return true;
         }
     }
     for (var i=0; i< KeyUrl.length; i++) {
         // If title match long key
-        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.title.search(KeyUrl[i].long_key) > -1) {
+        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.title.toLowerCase().search(KeyUrl[i].long_key) > -1) {
             return true;
         }
-        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.url.search(KeyUrl[i].long_key) > -1) {
+        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.url.toLowerCase().search(KeyUrl[i].long_key) > -1) {
             return true;
         }
     }
     if (KeyWord.indexOf(text) == -1) {
         // Not keyword, only search for title
-        if ((tab.url.search(text) > -1) || (tab.title.search(text) > -1)) {
+        if ((tab.url.toLowerCase().search(text) > -1) || (tab.title.toLowerCase().search(text) > -1)) {
             return true;
         }
     }
