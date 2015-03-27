@@ -86,7 +86,7 @@ function tab_action(text) {
                 }
                 if (tabs.length == 1) {
                     // Get current tab. There should always be 1 tab active.
-                    if (url.search("http") > -1) {
+                    if (url.search("://") > -1) {
                         OpenNewPage(tabs[0], url);
                     }
                     else {

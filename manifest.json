@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "",
+  "name": "ZMD",
   "version": "0.1",
 
   "description": "A Chrome extension",
   "author": "Zhe Wu",
 
   "background" : {
-    "scripts": ["js/zmd_background.js"],
+    "scripts": ["js/zmd_background.js", "js/tab_action.js"],
     "persistent": false
   },
   "permissions": ["tabs", "storage"],
@@ -27,8 +27,24 @@
   ],
   "options_ui": {
     // Required.
-    "page": "options.html",
+    "page": "html/options.html",
     // Recommended.
     "chrome_style": true
+  },
+
+  // Use broswer action 
+  "browser_action": {
+    "default_icon": {                    // optional
+      "38": "img/z_38.png"            // optional
+    },
+    "default_title": "zmd",      // optional; shown in tooltip
+    "default_popup": "html/popup.html"        // optional
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Z"
+      }
+    }
   }
 }
