@@ -2,22 +2,29 @@ var KeyUrl = [];
 //var KeyWord = KeyWordOriginal;
 var KeyWord = [];
 
-function MatchingKeyAndUrl(text, tab) {
-    for (var i=0; i< KeyUrl.length; i++) {
-        // If url match
-        if (KeyUrl[i].url.length > 0 && text == KeyUrl[i].key && tab.url.toLowerCase().search(KeyUrl[i].url.toLowerCase()) > -1) {
-            return true;
-        }
+function MatchingKeyAndUrl(text, tab, key_index) {
+    // check if url match
+    if (KeyUrl[key_index].url.length > 0 && text == KeyUrl[key_index].key && 
+        tab.url.toLowerCase().search(KeyUrl[key_index].url.toLowerCase()) > -1) {
+        return true;
     }
-    for (var i=0; i< KeyUrl.length; i++) {
-        // If title match long key
-        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.title.toLowerCase().search(KeyUrl[i].long_key.toLowerCase()) > -1) {
-            return true;
-        }
-        if (KeyUrl[i].long_key.length > 0 && text == KeyUrl[i].key && tab.url.toLowerCase().search(KeyUrl[i].long_key.toLowerCase()) > -1) {
-            return true;
-        }
+    return false
+}
+
+function MatchingKeyAndLongkey(text, tab, key_index){
+    // If title match long key
+    if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key && 
+        tab.title.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
+        return true;
     }
+    if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key &&
+        tab.url.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
+}
+
+function MatchingKeyAndTitle(text, tab, key_index){
     if (KeyWord.indexOf(text) == -1) {
         // Not keyword, only search for title
         if ((tab.url.toLowerCase().search(text.toLowerCase()) > -1) || (tab.title.toLowerCase().search(text.toLowerCase()) > -1)) {
@@ -29,8 +36,24 @@ function MatchingKeyAndUrl(text, tab) {
 
 function TabExists(currentWindow, text) {
     for (var i = 0; i < currentWindow.tabs.length; i++) {
-        if (MatchingKeyAndUrl(text, currentWindow.tabs[i])) {
-            return {exist: true, id: currentWindow.tabs[i].id};
+        for (var j = 0; j < KeyUrl.length; j++){
+            if (MatchingKeyAndUrl(text, currentWindow.tabs[i], j)) {
+                return {exist: true, id: currentWindow.tabs[i].id};
+            }
+        }
+    }
+    for (var i = 0; i < currentWindow.tabs.length; i++) {
+        for (var j = 0; j < KeyUrl.length; j++){
+            if (MatchingKeyAndLongkey(text, currentWindow.tabs[i], j)) {
+                return {exist: true, id: currentWindow.tabs[i].id};
+            }
+        }
+    }
+    for (var i = 0; i < currentWindow.tabs.length; i++) {
+        for (var j = 0; j < KeyUrl.length; j++){
+            if (MatchingKeyAndTitle(text, currentWindow.tabs[i], j)) {
+                return {exist: true, id: currentWindow.tabs[i].id};
+            }
         }
     }
     return {exist: false, id: -1};
@@ -49,7 +72,7 @@ function OpenNewPage(currentTab, url) {
 
 function tab_action(text) {
     //console.log('inputEntered: ' + text);
-    var entries = localStorage.entries;
+    var entries = localStorage["zmd_config"];
     KeyUrl = []; //clear map
     KeyWord = [];
     //console.log(entries);
@@ -61,7 +84,7 @@ function tab_action(text) {
     } catch (e) {
         // Couldn't find configurations
         console.log("Can't find configuration while loading.");
-        localStorage.entries = JSON.stringify([]);
+        localStorage["zmd_config"] = JSON.stringify([]);
     }
 
     chrome.windows.getCurrent({populate: true}, function(currentWindow) {
