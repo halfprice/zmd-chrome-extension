@@ -73,7 +73,7 @@ function readConfigFile() {
           var content = reader.result;
           var lines = content.split('\n');
           lines.forEach(function(line){
-            items = line.split(/[\s]+/);
+            items = line.split(/[,]+/);
             if (items[0] == "") {
               items.splice(0, 1);  // remove first element in array
             }
@@ -104,6 +104,15 @@ window.onload = function() {
     new Entry();
   };
   document.getElementById('upload').onclick = readConfigFile;
+  document.getElementById('removeall').onclick = function() {
+    var entries = document.getElementById('entries');
+    while (entries.childNodes.length > 0){
+        var entry = entries.childNodes[0];
+        console.log('remove'+entry);
+        entries.removeChild(entry);
+        storeEntries();
+    }
+  };
   //document.getElementById('save').onclick = function() {
   //  storeEntries();
   //}
