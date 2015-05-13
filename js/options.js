@@ -53,7 +53,7 @@ function storeEntries() {
             key: node.entry.getElement('key').value,
             long_key: node.entry.getElement('long-key').value,
             url: node.entry.getElement('url').value};
-  }));
+    }));
 }
 
 function readConfigFile() {
@@ -98,6 +98,16 @@ function readConfigFile() {
   }
 }
 
+function exportConfiguration() {
+    var config_csv = "";
+    Array.prototype.slice.apply(
+      document.getElementById('entries').childNodes).map(function(node) {
+        config_csv += node.entry.getElement('key').value+','+node.entry.getElement('long-key').value+','+node.entry.getElement('url').value+'\n'
+    });
+    window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
+    //window.saveAs(config_csv, "configuration.txt");
+}
+
 window.onload = function() {
   loadEntries();
   document.getElementById('new').onclick = function() {
@@ -113,6 +123,7 @@ window.onload = function() {
         storeEntries();
     }
   };
+  document.getElementById('export').onclick = exportConfiguration;
   //document.getElementById('save').onclick = function() {
   //  storeEntries();
   //}
