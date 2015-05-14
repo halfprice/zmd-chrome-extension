@@ -16,3 +16,9 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest){
         {content: text + ' 2', description: "test 2"}
     ]);
 });
+
+chrome.tabs.onActivated.addListener(function (w) {
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+      console.log("windowid "+w.windowId+" windowidtab "+tabs[0].windowId+" tabid "+w.tabId+" tabidtab "+tabs[0].id+" index "+tabs[0].index);
+    });
+});
