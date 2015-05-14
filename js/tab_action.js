@@ -95,6 +95,7 @@ function tab_action(text) {
         else { 
             // Tab does not exist.
             chrome.tabs.query({active:true}, function(tabs) {
+                console.log(tabs.length);
                 var found_url = false
                 for (i = 0; i < KeyUrl.length; i++) {
                     if (text == KeyUrl[i].key) {
@@ -107,12 +108,14 @@ function tab_action(text) {
                     // General rule, just use the typed url
                     url = text;
                 }
-                if (tabs.length == 1) {
+                if (tabs.length > 0) {  // TODO: is this right?
                     // Get current tab. There should always be 1 tab active.
                     if (url.search("://") > -1) {
+                        console.log("open new page "+ url);
                         OpenNewPage(tabs[0], url);
                     }
                     else {
+                        console.log("open new page "+ url);
                         OpenNewPage(tabs[0], "http://"+url);
                     }
                 } /*else {
