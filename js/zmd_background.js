@@ -14,6 +14,7 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest){
     suggest([
         {content: text + ' 1', description: "test 1"},
         {content: text + ' 2', description: "test 2"}
+        {content: text + ' 3', description: "test 3"}
     ]);
 });
 
