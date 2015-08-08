@@ -47,6 +47,14 @@
       "suggested_key": {
         "default": "Ctrl+Shift+Z"
       }
+    },
+    "backward-tab": {
+      "suggested_key": { "default": "Ctrl+Shift+B" },
+      "description": "Go to last visited tab."
+    },
+    "forward-tab": {
+      "suggested_key": { "default": "Ctrl+Shift+F" },
+      "description": "Go to next visited tab."
     }
   }
 }
