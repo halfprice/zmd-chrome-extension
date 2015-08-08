@@ -1,9 +1,10 @@
-var KeyUrl = [];
-//var KeyWord = KeyWordOriginal;
-var KeyWord = [];
+var KeyUrl = []; // List of key urls
+var KeyWord = []; // List of short key words
+
+var Commands = ["dg"]; // command is used to do some action on tabs
 
 function MatchingKeyAndUrl(text, tab, key_index) {
-    // check if url match
+    // the key is pre-defined key. Check if url of that key match tab url
     if (KeyUrl[key_index].url.length > 0 && text == KeyUrl[key_index].key && 
         tab.url.toLowerCase().search(KeyUrl[key_index].url.toLowerCase()) > -1) {
         return true;
@@ -12,11 +13,12 @@ function MatchingKeyAndUrl(text, tab, key_index) {
 }
 
 function MatchingKeyAndLongkey(text, tab, key_index){
-    // If title match long key
+    // If tab title match long key
     if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key && 
         tab.title.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
         return true;
     }
+    // If tab url contains long key
     if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key &&
         tab.url.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
         return true;
@@ -25,7 +27,7 @@ function MatchingKeyAndLongkey(text, tab, key_index){
 }
 
 function MatchingKeyAndTitle(text, tab, key_index){
-    if (KeyWord.indexOf(text) == -1) {
+    if (KeyWord.indexOf(text) == -1) { // if it is keyword, don't do url or title maching.
         // Not keyword, only search for title
         if ((tab.url.toLowerCase().search(text.toLowerCase()) > -1) || (tab.title.toLowerCase().search(text.toLowerCase()) > -1)) {
             return true;
@@ -59,6 +61,18 @@ function TabExists(currentWindow, text) {
     return {exist: false, id: -1};
 }
 
+function ExecuteCommand(currentWindow, text) {
+    if (text == "dg") {
+        // Delete all google search tabs
+        for (var i = 0; i < currentWindow.tabs.length; i++) {
+            if (currentWindow.tabs[i].url.toLowerCase().search("www.google.com/search") > -1) {
+                // Close that tab
+                chrome.tabs.remove(currentWindow.tabs[i].id);
+            }
+        }
+    }
+}
+
 function OpenNewPage(currentTab, url) {
     if (currentTab.pinned) {
         console.log("open new page "+url);
@@ -75,7 +89,7 @@ function tab_action(text) {
     var entries = localStorage["zmd_config"];
     KeyUrl = []; //clear map
     KeyWord = [];
-    //console.log(entries);
+    console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
             KeyUrl.push({key:entry.key, long_key:entry.long_key, url:entry.url});
@@ -88,47 +102,53 @@ function tab_action(text) {
     }
 
     chrome.windows.getCurrent({populate: true}, function(currentWindow) {
-        var x = new TabExists(currentWindow, text);
-        if (x.exist) {
-            chrome.tabs.update(x.id, {active:true});
+
+        if ( Commands.indexOf(text) > -1 ) {
+            console.log("aaaaa");
+            ExecuteCommand(currentWindow, text);
         }
-        else { 
-            // Tab does not exist.
-            chrome.tabs.query({active:true}, function(tabs) {
-                console.log(tabs.length);
-                var found_url = false
-                for (i = 0; i < KeyUrl.length; i++) {
-                    if (text == KeyUrl[i].key) {
-                        url = KeyUrl[i].url;
-                        found_url = true;
-                        break;
+        else {
+            var x = new TabExists(currentWindow, text);
+            if (x.exist) {
+                chrome.tabs.update(x.id, {active:true});
+            }
+            else { 
+                // Tab does not exist.
+                chrome.tabs.query({active:true}, function(tabs) {
+                    console.log(tabs.length);
+                    var found_url = false
+                    for (i = 0; i < KeyUrl.length; i++) {
+                        if (text == KeyUrl[i].key) {
+                            url = KeyUrl[i].url;
+                            found_url = true;
+                            break;
+                        }
                     }
-                }
-                if (!found_url) {
-                    // General rule, just use the typed url
-                    url = text;
-                }
-                if (tabs.length > 0) {  // TODO: is this right?
-                    // Get current tab. There should always be 1 tab active.
-                    if (url.search("://") > -1) {
-                        console.log("open new page "+ url);
-                        OpenNewPage(tabs[0], url);
+                    if (!found_url) {
+                        // General rule, just use the typed url
+                        url = text;
                     }
-                    else {
-                        console.log("open new page "+ url);
-                        OpenNewPage(tabs[0], "http://"+url);
-                    }
-                } /*else {
-                    // Don't know what to do. Creating new tab for now.
-                    if (url.search("http") > -1) {
-                        chrome.tabs.create({"url":url});
-                    }
-                    else {
-                        chrome.tabs.create({"url":"http://"+url});
-                    }
-                }*/
-            });
-            
+                    if (tabs.length > 0) {  // TODO: is this right?
+                        // Get current tab. There should always be 1 tab active.
+                        if (url.search("://") > -1) {
+                            console.log("open new page "+ url);
+                            OpenNewPage(tabs[0], url);
+                        }
+                        else {
+                            console.log("open new page "+ url);
+                            OpenNewPage(tabs[0], "http://"+url);
+                        }
+                    } /*else {
+                        // Don't know what to do. Creating new tab for now.
+                        if (url.search("http") > -1) {
+                            chrome.tabs.create({"url":url});
+                        }
+                        else {
+                            chrome.tabs.create({"url":"http://"+url});
+                        }
+                    }*/
+                });
+            }
         }
     });
 }
