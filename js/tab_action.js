@@ -65,7 +65,8 @@ function ExecuteCommand(currentWindow, text) {
     if (text == "dg") {
         // Delete all google search tabs
         for (var i = 0; i < currentWindow.tabs.length; i++) {
-            if (currentWindow.tabs[i].url.toLowerCase().search("www.google.com/search") > -1) {
+            if ((currentWindow.tabs[i].url.toLowerCase().search("www.google.com/search") > -1) || 
+                (currentWindow.tabs[i].url.toLowerCase().search("www.google.com/webhp") > -1)) {
                 // Close that tab
                 chrome.tabs.remove(currentWindow.tabs[i].id);
             }
