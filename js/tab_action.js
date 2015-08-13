@@ -1,7 +1,7 @@
 var KeyUrl = []; // List of key urls
 var KeyWord = []; // List of short key words
 
-var Commands = ["dg"]; // command is used to do some action on tabs
+var Commands = ["dg", "ds"]; // command is used to do some action on tabs
 
 function MatchingKeyAndUrl(text, tab, key_index) {
     // the key is pre-defined key. Check if url of that key match tab url
@@ -67,6 +67,15 @@ function ExecuteCommand(currentWindow, text) {
         for (var i = 0; i < currentWindow.tabs.length; i++) {
             if ((currentWindow.tabs[i].url.toLowerCase().search("www.google.com/search") > -1) || 
                 (currentWindow.tabs[i].url.toLowerCase().search("www.google.com/webhp") > -1)) {
+                // Close that tab
+                chrome.tabs.remove(currentWindow.tabs[i].id);
+            }
+        }
+    }
+    if (text == "ds") {
+        // Delete all stack overflow tabls
+        for (var i = 0; i < currentWindow.tabs.length; i++) {
+            if ((currentWindow.tabs[i].url.toLowerCase().search("stackoverflow.com") > -1)) {
                 // Close that tab
                 chrome.tabs.remove(currentWindow.tabs[i].id);
             }
