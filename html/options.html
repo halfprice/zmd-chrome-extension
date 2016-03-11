@@ -12,32 +12,44 @@
 
 <body>
 
-<img src="../img/z_128.png" alt="logo">
-<h1>Registered keys</h1>
-  <table id=entries>
-    <tr>
-      <th>Key</th>
-      <th>Key workds (separated by ";")</th> 
-      <th>URL</th>
-    </tr>
-  </table>
-  <button id=new>New entry</button><br>
-  <br>
-  <button id=removeall>Remove all entries</button><br>
-  <button id=export>Export configuration to file</button><br>
-  <br>
-  Or you can choose to upload from file: <br>
-  <input type="file" value="no file" id=file></input>
-  <button id=upload>Upload</button>
-  <table hidden>
-    <tr id=key-template hidden>
-      <td><input type=text class=key size=10></td>
-      <td><input type=text class=key-words></td>
-      <td><input type=text class=url size=50></td>
-      <td><button class=remove>Remove</button></td>
-    </tr>
-  </table>
+    <img src="../img/z_128.png" alt="logo">
+    <h1>Registered keys</h1>
+    <table id=entries>
+        <tr>
+            <th>Key</th>
+            <th>Key workds (separated by ";")</th> 
+            <th>URL</th>
+        </tr>
+    </table>
+    <button id=new>New entry</button><br>
+    <br>
+        <button id=removeall>Remove all entries</button><br>
+        <button id=export>Export configuration to file</button><br>
+    <br>
+    Or you can choose to upload from file: <br>
+    <input type="file" value="no file" id=file></input>
+    <button id=upload>Upload</button>
+    <table hidden>
+        <tr id=key-template hidden>
+            <td><input type=text class=key size=10></td>
+            <td><input type=text class=key-words></td>
+            <td><input type=text class=url size=50></td>
+            <td><button class=remove>Remove</button></td>
+        </tr>
+    </table>
 
-  <script src="../js/options.js"></script>
+    <h1>Registered commands</h1>
+    <table id=commands>
+        <tr>
+            <th>Command</th>
+            <th>Description</th>
+        </tr>
+        <tr id=command-template hidden>
+            <td><input type=text class=command size=10 readonly></td>
+            <td><input type=text class=description size=50 readonly></td>
+        </tr>
+    </table>
+
+    <script src="../js/options.js"></script>
 </body>
 </html>

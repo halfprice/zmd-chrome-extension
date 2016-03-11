@@ -33,6 +33,14 @@ var toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
 
+function tableNodeFilter(node) {
+    // Ignore table header
+    if (node.nodeName == '#text' || node.nodeName == 'TBODY') {
+        return false;
+    }
+    return true;
+}
+
 Entry.next_id = 0;
 
 Entry.prototype.getElement = function(name) {
@@ -55,11 +63,7 @@ function storeEntries() {
 
     //Creating entry array and store it to localStorage
     localStorage["zmd_config"] = JSON.stringify(Array.prototype.slice.apply(
-      document.getElementById('entries').childNodes).map(function(node) {
-        if (node.nodeName == '#text' || node.nodeName == 'TBODY') {
-            console.log('ignore header');
-            return null;
-        }
+      document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
         return {
             key: node.entry.getElement('key').value,
             key_words: node.entry.getElement('key-words').value,
@@ -112,7 +116,7 @@ function readConfigFile() {
 function exportConfiguration() {
     var config_csv = "";
     Array.prototype.slice.apply(
-      document.getElementById('entries').childNodes).map(function(node) {
+      document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
         config_csv += node.entry.getElement('key').value+','+node.entry.getElement('key-words').value+','+node.entry.getElement('url').value+'\n'
     });
     window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
