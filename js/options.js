@@ -49,7 +49,7 @@ Entry.prototype.getElement = function(name) {
 
 function loadEntries() {
   var entries = localStorage["zmd_config"];
-  console.log(entries);
+  //console.log(entries);
   try {
     JSON.parse(entries).forEach(function(entry) {new Entry(entry);});
   } catch (e) {
@@ -80,7 +80,7 @@ function readConfigFile() {
       // file exists
       if (files.files.length == 1) {
 
-        console.log(files.files[0].name+' '+files.files.length+' '+files.files[0].type);
+        // console.log(files.files[0].name+' '+files.files.length+' '+files.files[0].type);
 
         var reader = new FileReader();
 
@@ -92,9 +92,9 @@ function readConfigFile() {
             if (items[0] == "") {
               items.splice(0, 1);  // remove first element in array
             }
-            console.log(items);
+            //console.log(items);
             if (items.length >= 3) {
-              console.log('selected '+items);
+              //console.log('selected '+items);
               var new_entry = {key: items[0], key_words: items[1], url: items[2]};
               // create new entry
               new Entry(new_entry);

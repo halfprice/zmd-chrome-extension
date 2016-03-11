@@ -1,5 +1,6 @@
 var KeyUrl = []; // List of key urls
 var KeyWord = []; // List of short key words
+var KeyWords = [];
 
 var Commands = ["dg", "ds"]; // command is used to do some action on tabs
 
@@ -14,13 +15,13 @@ function MatchingKeyAndUrl(text, tab, key_index) {
 
 function MatchingKeyAndLongkey(text, tab, key_index){
     // If tab title match long key
-    if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key && 
-        tab.title.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
+    if (KeyUrl[key_index].key_words.length > 0 && text == KeyUrl[key_index].key && 
+        tab.title.toLowerCase().search(KeyUrl[key_index].key_words.toLowerCase()) > -1) {
         return true;
     }
     // If tab url contains long key
-    if (KeyUrl[key_index].long_key.length > 0 && text == KeyUrl[key_index].key &&
-        tab.url.toLowerCase().search(KeyUrl[key_index].long_key.toLowerCase()) > -1) {
+    if (KeyUrl[key_index].key_words.length > 0 && text == KeyUrl[key_index].key &&
+        tab.url.toLowerCase().search(KeyUrl[key_index].key_words.toLowerCase()) > -1) {
         return true;
     }
     return false;
@@ -84,6 +85,7 @@ function ExecuteCommand(currentWindow, text) {
 }
 
 function OpenNewPage(currentTab, url) {
+    /*
     if (currentTab.pinned) {
         console.log("open new page "+url);
         chrome.tabs.create({"url":url});
@@ -91,7 +93,10 @@ function OpenNewPage(currentTab, url) {
     else {
         console.log("update current page "+url);
         chrome.tabs.update(null, {"url":url});
-    }
+    }*/
+
+    console.log("open new page "+url);
+    chrome.tabs.create({"url":url});
 }
 
 function tab_action(text) {
@@ -102,7 +107,7 @@ function tab_action(text) {
     console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
-            KeyUrl.push({key:entry.key, long_key:entry.long_key, url:entry.url});
+            KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url});
             KeyWord.push(entry.key);
         });
     } catch (e) {

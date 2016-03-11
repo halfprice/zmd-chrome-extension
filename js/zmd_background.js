@@ -55,7 +55,7 @@ chrome.tabs.onRemoved.addListener(function (w) {
             break;
         }
     }
-    console.log(tab_history);
+    //console.log(tab_history);
     localStorage["tab_history"] =JSON.stringify(tab_history);
 });
 

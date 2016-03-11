@@ -6,7 +6,7 @@ function getRegisteredKeys() {
     var config_csv = "";
     var entries = localStorage["zmd_config"];
     try {
-        JSON.parse(entries).forEach(function(entry) {config_csv += entry.key+',  '+entry.long_key+',  '+entry.url+'<br/>';});
+        JSON.parse(entries).forEach(function(entry) {config_csv += entry.key+',  '+entry.key_words+',  '+entry.url+'<br/>';});
     } catch (e) {
         console.log("display registered key error.")
     }
