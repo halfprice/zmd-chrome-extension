@@ -8,23 +8,29 @@ function Entry(data) {
   entries.appendChild(this.node);
   this.node.hidden = false;
 
+
   if (data) {
     this.getElement('key').value = data.key;
-    this.getElement('long-key').value = data.long_key;
+    this.getElement('key-words').value = data.key_words;
     this.getElement('url').value = data.url;
   }
 
   this.getElement('key').oninput = storeEntries;
-  this.getElement('long-key').oninput = storeEntries;
+  this.getElement('key-words').oninput = storeEntries;
   this.getElement('url').oninput = storeEntries;
 
   var entry = this;
+
 
   this.getElement('remove').onclick = function() {
     entry.node.parentNode.removeChild(entry.node);
     storeEntries();
   };
   storeEntries();
+}
+
+var toType = function(obj) {
+  return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
 
 Entry.next_id = 0;
@@ -44,14 +50,19 @@ function loadEntries() {
 }
 
 function storeEntries() {
-    console.log("store");
-    console.log(document.getElementById('entries').childNodes);
+    console.log("Storing configuration.");
+    //console.log(document.getElementById('entries').childNodes);
+
     //Creating entry array and store it to localStorage
     localStorage["zmd_config"] = JSON.stringify(Array.prototype.slice.apply(
       document.getElementById('entries').childNodes).map(function(node) {
+        if (node.nodeName == '#text' || node.nodeName == 'TBODY') {
+            console.log('ignore header');
+            return null;
+        }
         return {
             key: node.entry.getElement('key').value,
-            long_key: node.entry.getElement('long-key').value,
+            key_words: node.entry.getElement('key-words').value,
             url: node.entry.getElement('url').value};
     }));
 }
@@ -80,7 +91,7 @@ function readConfigFile() {
             console.log(items);
             if (items.length >= 3) {
               console.log('selected '+items);
-              var new_entry = {key: items[0], long_key: items[1], url: items[2]};
+              var new_entry = {key: items[0], key_words: items[1], url: items[2]};
               // create new entry
               new Entry(new_entry);
             }
@@ -89,7 +100,7 @@ function readConfigFile() {
         reader.readAsText(files.files[0]);
       }
       else{
-        console.log("error file length");
+        console.log("Wrong file length.");
       }
     }
     else{
@@ -102,7 +113,7 @@ function exportConfiguration() {
     var config_csv = "";
     Array.prototype.slice.apply(
       document.getElementById('entries').childNodes).map(function(node) {
-        config_csv += node.entry.getElement('key').value+','+node.entry.getElement('long-key').value+','+node.entry.getElement('url').value+'\n'
+        config_csv += node.entry.getElement('key').value+','+node.entry.getElement('key-words').value+','+node.entry.getElement('url').value+'\n'
     });
     window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
     //window.saveAs(config_csv, "configuration.txt");

@@ -114,7 +114,6 @@ function tab_action(text) {
     chrome.windows.getCurrent({populate: true}, function(currentWindow) {
 
         if ( Commands.indexOf(text) > -1 ) {
-            console.log("aaaaa");
             ExecuteCommand(currentWindow, text);
         }
         else {

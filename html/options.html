@@ -2,17 +2,25 @@
 <html>
 <head>
   <title>My Test Extension Options</title>
+<style>
+    .key-words {
+        width: 300px;
+        margin: auto;
+    }
+</style>
 </head>
 
 <body>
 
 <img src="../img/z_128.png" alt="logo">
 <h1>Registered keys</h1>
-
-  &nbsp;Key &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Long Key
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;URL
-
-  <table id=entries></table>
+  <table id=entries>
+    <tr>
+      <th>Key</th>
+      <th>Key workds (separated by ";")</th> 
+      <th>URL</th>
+    </tr>
+  </table>
   <button id=new>New entry</button><br>
   <br>
   <button id=removeall>Remove all entries</button><br>
@@ -21,10 +29,10 @@
   Or you can choose to upload from file: <br>
   <input type="file" value="no file" id=file></input>
   <button id=upload>Upload</button>
-    <table hidden>
+  <table hidden>
     <tr id=key-template hidden>
       <td><input type=text class=key size=10></td>
-      <td><input type=text class=long-key size=20></td>
+      <td><input type=text class=key-words></td>
       <td><input type=text class=url size=50></td>
       <td><button class=remove>Remove</button></td>
     </tr>
