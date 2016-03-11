@@ -119,7 +119,13 @@ function exportConfiguration() {
       document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
         config_csv += node.entry.getElement('key').value+','+node.entry.getElement('key-words').value+','+node.entry.getElement('url').value+'\n'
     });
-    window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
+    //window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
+
+    var link = document.createElement('a');
+    link.download = 'configuration.txt';
+    link.href = 'data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv);
+    link.click();
+
     //window.saveAs(config_csv, "configuration.txt");
 }
 
