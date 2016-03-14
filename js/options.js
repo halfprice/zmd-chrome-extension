@@ -13,11 +13,13 @@ function Entry(data) {
     this.getElement('key').value = data.key;
     this.getElement('key-words').value = data.key_words;
     this.getElement('url').value = data.url;
+    this.getElement('pin').checked = data.pin;
   }
 
   this.getElement('key').oninput = storeEntries;
   this.getElement('key-words').oninput = storeEntries;
   this.getElement('url').oninput = storeEntries;
+  this.getElement('pin').onchange = storeEntries;
 
   var entry = this;
 
@@ -64,10 +66,12 @@ function storeEntries() {
     //Creating entry array and store it to localStorage
     localStorage["zmd_config"] = JSON.stringify(Array.prototype.slice.apply(
       document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
+        console.log(node.entry.getElement('pin').checked);
         return {
             key: node.entry.getElement('key').value,
             key_words: node.entry.getElement('key-words').value,
-            url: node.entry.getElement('url').value};
+            url: node.entry.getElement('url').value,
+            pin: node.entry.getElement('pin').checked};
     }));
 }
 
