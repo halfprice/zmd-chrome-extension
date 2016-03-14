@@ -66,7 +66,7 @@ function storeEntries() {
     //Creating entry array and store it to localStorage
     localStorage["zmd_config"] = JSON.stringify(Array.prototype.slice.apply(
       document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
-        console.log(node.entry.getElement('pin').checked);
+        //console.log(node.entry.getElement('pin').checked);
         return {
             key: node.entry.getElement('key').value,
             key_words: node.entry.getElement('key-words').value,
@@ -92,14 +92,15 @@ function readConfigFile() {
           var content = reader.result;
           var lines = content.split('\n');
           lines.forEach(function(line){
-            items = line.split(/[,]+/);
+            //items = line.split(/[,]+/);
+            items = line.split(",");
             if (items[0] == "") {
               items.splice(0, 1);  // remove first element in array
             }
-            //console.log(items);
+            console.log(items);
             if (items.length >= 3) {
               //console.log('selected '+items);
-              var new_entry = {key: items[0], key_words: items[1], url: items[2]};
+              var new_entry = {key: items[0], key_words: items[1], url: items[2], pin: items[3]=='true'};
               // create new entry
               new Entry(new_entry);
             }
@@ -121,7 +122,7 @@ function exportConfiguration() {
     var config_csv = "";
     Array.prototype.slice.apply(
       document.getElementById('entries').childNodes).filter(tableNodeFilter).map(function(node) {
-        config_csv += node.entry.getElement('key').value+','+node.entry.getElement('key-words').value+','+node.entry.getElement('url').value+'\n'
+        config_csv += node.entry.getElement('key').value+','+node.entry.getElement('key-words').value+','+node.entry.getElement('url').value+','+node.entry.getElement('pin').checked+'\n';
     });
     //window.open('data:text/csv;charset=utf-8;filename=configuration.txt,' + escape(config_csv), "configuration.txt");
 

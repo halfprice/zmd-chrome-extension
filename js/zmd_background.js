@@ -64,5 +64,29 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 chrome.windows.onCreated.addListener(function (w){
-
+    // Check if this is the first window. If true, create pinned tab. If false, don't do anything
+    chrome.windows.getAll({populate: true}, function(currentWindows){
+        console.log(currentWindows.length);
+        console.log(currentWindows.length == 1);
+        if (currentWindows.length == 1) {
+            // This is the first window. Create pinned tabs.
+            // First read configuration
+            var entries = localStorage["zmd_config"];
+            var KeyUrl = []
+            try {
+                JSON.parse(entries).forEach(function(entry) {
+                    KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url, pin:entry.pin});
+                });
+            } catch (e) {
+                // Couldn't find configurations
+                console.log("Can't find configuration while loading.");
+            }
+            console.log(KeyUrl.length);
+            for (var i = 0; i < KeyUrl.length; i++) {
+                if (KeyUrl[i].pin) {
+                    chrome.tabs.create({"url": KeyUrl[i].url, "pinned": true});
+                }
+            }
+        }
+    });
 });

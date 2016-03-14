@@ -1,5 +1,3 @@
-var bkg = chrome.extension.getBackgroundPage(); // used for logging
-
 var KeyUrl = []; // List of key urls
 var KeyWord = []; // List of short key words
 var KeyWords = [];
@@ -89,19 +87,21 @@ function ExecuteCommand(currentWindow, text) {
 function OpenNewPage(currentTab, url) {
     /*
     if (currentTab.pinned) {
-        bkg.console.log("open new page "+url);
+        console.log("open new page "+url);
         chrome.tabs.create({"url":url});
     }
     else {
-        bkg.console.log("update current page "+url);
+        console.log("update current page "+url);
         chrome.tabs.update(null, {"url":url});
     }*/
 
-    bkg.console.log("open new page "+url);
+    console.log("open new page "+url);
     chrome.tabs.create({"url":url});
 }
 
 function tab_action(text) {
+    
+    var bkg = chrome.extension.getBackgroundPage(); // used for logging
     //bkg.console.log('inputEntered: ' + text);
     var entries = localStorage["zmd_config"];
     KeyUrl = []; //clear map
@@ -109,7 +109,7 @@ function tab_action(text) {
     bkg.console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
-            KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url});
+            KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url, pin:entry.pin});
             KeyWord.push(entry.key);
         });
     } catch (e) {
