@@ -1,3 +1,5 @@
+var bkg = chrome.extension.getBackgroundPage(); // used for logging
+
 var KeyUrl = []; // List of key urls
 var KeyWord = []; // List of short key words
 var KeyWords = [];
@@ -87,24 +89,24 @@ function ExecuteCommand(currentWindow, text) {
 function OpenNewPage(currentTab, url) {
     /*
     if (currentTab.pinned) {
-        console.log("open new page "+url);
+        bkg.console.log("open new page "+url);
         chrome.tabs.create({"url":url});
     }
     else {
-        console.log("update current page "+url);
+        bkg.console.log("update current page "+url);
         chrome.tabs.update(null, {"url":url});
     }*/
 
-    console.log("open new page "+url);
+    bkg.console.log("open new page "+url);
     chrome.tabs.create({"url":url});
 }
 
 function tab_action(text) {
-    //console.log('inputEntered: ' + text);
+    //bkg.console.log('inputEntered: ' + text);
     var entries = localStorage["zmd_config"];
     KeyUrl = []; //clear map
     KeyWord = [];
-    console.log(entries);
+    bkg.console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
             KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url});
@@ -112,58 +114,62 @@ function tab_action(text) {
         });
     } catch (e) {
         // Couldn't find configurations
-        console.log("Can't find configuration while loading.");
+        bkg.console.log("Can't find configuration while loading.");
         localStorage["zmd_config"] = JSON.stringify([]);
     }
 
-    chrome.windows.getCurrent({populate: true}, function(currentWindow) {
+    chrome.windows.getAll({populate: true}, function(currentWindows){
+        var actionTaken = currentWindows.some(function(currentWindow) {
+            if ( Commands.indexOf(text) > -1 ) {
+                // Execute Command
+                ExecuteCommand(currentWindow, text);
+            }
+            else {
+                var x = new TabExists(currentWindow, text);
+                if (x.exist) {
+                    chrome.tabs.update(x.id, {active:true});
+                    return true; // Stop windows iteration. See Array.some()
+                }
+                else {}
+            }
+        });
 
-        if ( Commands.indexOf(text) > -1 ) {
-            // Execute Command
-            ExecuteCommand(currentWindow, text);
-        }
-        else {
-            var x = new TabExists(currentWindow, text);
-            if (x.exist) {
-                chrome.tabs.update(x.id, {active:true});
-            }
-            else { 
-                // Tab does not exist.
-                chrome.tabs.query({active:true}, function(tabs) {
-                    console.log(tabs.length);
-                    var found_url = false
-                    for (i = 0; i < KeyUrl.length; i++) {
-                        if (text == KeyUrl[i].key) {
-                            url = KeyUrl[i].url;
-                            found_url = true;
-                            break;
-                        }
+        if (Commands.indexOf(text) == -1 && !actionTaken) {
+            // text is not a command and Tab does not exist.
+            chrome.tabs.query({active:true}, function(tabs) {
+                // See if text is a pre-defined key
+                var found_url = false
+                for (i = 0; i < KeyUrl.length; i++) {
+                    if (text == KeyUrl[i].key) {
+                        url = KeyUrl[i].url;
+                        found_url = true;
+                        break;
                     }
-                    if (!found_url) {
-                        // General rule, just use the typed url
-                        url = text;
+                }
+                if (!found_url) {
+                    // General rule, just use the typed url
+                    url = text;
+                }
+                if (tabs.length > 0) {  // TODO: is this right?
+                    // Get current tab. There should always be 1 tab active.
+                    if (url.search("://") > -1) {
+                        bkg.console.log("open new page "+ url);
+                        OpenNewPage(tabs[0], url);
                     }
-                    if (tabs.length > 0) {  // TODO: is this right?
-                        // Get current tab. There should always be 1 tab active.
-                        if (url.search("://") > -1) {
-                            console.log("open new page "+ url);
-                            OpenNewPage(tabs[0], url);
-                        }
-                        else {
-                            console.log("open new page "+ url);
-                            OpenNewPage(tabs[0], "http://"+url);
-                        }
-                    } /*else {
-                        // Don't know what to do. Creating new tab for now.
-                        if (url.search("http") > -1) {
-                            chrome.tabs.create({"url":url});
-                        }
-                        else {
-                            chrome.tabs.create({"url":"http://"+url});
-                        }
-                    }*/
-                });
-            }
+                    else {
+                        bkg.console.log("open new page "+ url);
+                        OpenNewPage(tabs[0], "http://"+url);
+                    }
+                } /*else {
+                    // Don't know what to do. Creating new tab for now.
+                    if (url.search("http") > -1) {
+                        chrome.tabs.create({"url":url});
+                    }
+                    else {
+                        chrome.tabs.create({"url":"http://"+url});
+                    }
+                }*/
+            });
         }
     });
 }
