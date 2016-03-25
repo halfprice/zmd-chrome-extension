@@ -101,12 +101,11 @@ function OpenNewPage(currentTab, url) {
 
 function tab_action(text) {
     
-    var bkg = chrome.extension.getBackgroundPage(); // used for logging
     //bkg.console.log('inputEntered: ' + text);
     var entries = localStorage["zmd_config"];
     KeyUrl = []; //clear map
     KeyWord = [];
-    bkg.console.log(entries);
+    console.log(entries);
     try {
         JSON.parse(entries).forEach(function(entry) {
             KeyUrl.push({key:entry.key, key_words:entry.key_words, url:entry.url, pin:entry.pin});
@@ -114,7 +113,7 @@ function tab_action(text) {
         });
     } catch (e) {
         // Couldn't find configurations
-        bkg.console.log("Can't find configuration while loading.");
+        console.log("Can't find configuration while loading.");
         localStorage["zmd_config"] = JSON.stringify([]);
     }
 
@@ -153,11 +152,11 @@ function tab_action(text) {
                 if (tabs.length > 0) {  // TODO: is this right?
                     // Get current tab. There should always be 1 tab active.
                     if (url.search("://") > -1) {
-                        bkg.console.log("open new page "+ url);
+                        console.log("open new page "+ url);
                         OpenNewPage(tabs[0], url);
                     }
                     else {
-                        bkg.console.log("open new page "+ url);
+                        console.log("open new page "+ url);
                         OpenNewPage(tabs[0], "http://"+url);
                     }
                 } /*else {
